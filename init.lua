@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -122,7 +122,12 @@ end)
 vim.o.breakindent = true
 
 -- Save undo history
-vim.o.undofile = true
+vim.o.undofile = false
+
+--Line numbers
+vim.wo.number = true
+
+vim.cmd [[ set termguicolors ]]
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.o.ignorecase = true
@@ -173,6 +178,25 @@ vim.o.confirm = true
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- custom keymap set
+
+-- move to first char of line
+vim.keymap.set('n', '1', '0', { desc = 'Start of line' })
+
+-- move to end char of line
+vim.keymap.set('n', '0', '$', { desc = 'End of line' })
+
+-- undo
+vim.keymap.set('n', '<Space>z', 'u', { desc = 'Undo' })
+
+-- disable auto comment on continuation
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = '*',
+  callback = function()
+    vim.opt_local.formatoptions:remove { 'r', 'o' }
+  end,
+})
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
@@ -217,6 +241,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
     vim.hl.on_yank()
   end,
+})
+
+-- for cheatsheet
+local cheatsheet = require 'custom.cheatsheet'
+vim.keymap.set('n', '<leader>cs', cheatsheet.open_cheatsheet, {
+  noremap = true,
+  silent = true,
+  desc = 'Cheatsheet',
 })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
@@ -357,6 +389,104 @@ require('lazy').setup({
   -- you do for a plugin at the top level, you can do for a dependency.
   --
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
+
+  { -- for file dir (custom)
+    'nvim-tree/nvim-tree.lua',
+    config = function()
+      require('nvim-tree').setup {
+        filters = {
+          custom = { '^\\.git$', '^\\.github$' },
+        },
+        view = {
+          side = 'right',
+          width = 30,
+        },
+      }
+      --   toggle file dir with space + dot
+      --   vim.keymap.set('n', '<c-.>', ':NvimTreeFindFile<CR>')
+      -- vim.keymap.set('n', '<leader>.', ':NvimTreeFindFile<CR>', { desc = 'Open tree view' })
+      vim.keymap.set('n', '<leader>.', ':NvimTreeToggle<CR>', { desc = 'Toggle tree view' })
+    end,
+  },
+
+  { -- for prettier (custom)
+    'prettier/vim-prettier',
+    build = 'pnpm install',
+    ft = { 'javascript', 'typescript', 'css', 'json', 'markdown', 'html' },
+  },
+
+  { -- for colorizer (custom)
+    'norcalli/nvim-colorizer.lua',
+    config = function()
+      require('colorizer').setup()
+    end,
+  },
+
+  { -- for icons (custom)
+    'nvim-tree/nvim-web-devicons',
+    opts = {},
+  },
+
+  { -- for auto pairs (custom)
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = true,
+  },
+
+  { -- for react snippets (custom)
+    'mlaursen/vim-react-snippets',
+    config = function()
+      require('vim-react-snippets').lazy_load()
+    end,
+  },
+
+  { -- for lualine (custom)
+    'nvim-lualine/lualine.nvim',
+    config = function()
+      require('lualine').setup {
+        options = {
+          icons_enabled = true,
+          theme = 'dracula',
+          component_separators = { left = '|', right = '|' },
+          section_separators = { left = '', right = '' },
+        },
+        sections = {
+          lualine_a = {
+            {
+              'filename',
+              path = 1,
+            },
+          },
+        },
+      }
+    end,
+  },
+
+  { -- git (custom)
+    'NeogitOrg/neogit',
+    dependencies = {
+      'nvim-lua/plenary.nvim', -- required
+      'sindrets/diffview.nvim', -- optional - diff integration
+    },
+    config = function()
+      -- neogit
+      local neogit = require 'neogit'
+
+      -- neogit open
+      vim.keymap.set('n', '<leader>gs', neogit.open, {
+        silent = true,
+        noremap = true,
+        desc = 'Open git',
+      })
+
+      -- neogit branches
+      vim.keymap.set('n', '<leader>gb', ':Telescope git_branches<CR>', {
+        silent = true,
+        noremap = true,
+        desc = 'Open git branches',
+      })
+    end,
+  },
 
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
@@ -887,7 +1017,7 @@ require('lazy').setup({
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
         styles = {
-          comments = { italic = false }, -- Disable italics in comments
+          comments = { italic = true }, -- Disable italics in comments
         },
       }
 

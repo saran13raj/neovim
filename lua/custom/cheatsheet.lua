@@ -1,6 +1,9 @@
 -- lua/cheatsheet.lua
 local M = {}
 
+-- module-level variables:
+local cheatsheet_buf1 = nil
+local cheatsheet_buf2 = nil
 -- Cheatsheet content
 local cheatsheet_content = [[
 # Neovim Motion Cheat Sheet
@@ -167,18 +170,24 @@ local cheatsheet_content = [[
 function M.open_cheatsheet()
   -- check existing buffer
   local existing_buf = nil
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_valid(buf) then
-      local buf_name = vim.api.nvim_buf_get_name(buf)
-      if buf_name:match 'Cheatsheet' then
-        existing_buf = buf
-        break
-      end
-    end
+  -- Check if cheatsheet buffers already exist
+  local buf
+  if cheatsheet_buf1 and vim.api.nvim_buf_is_valid(cheatsheet_buf1) then
+    buf = cheatsheet_buf1
+    existing_buf = buf
+  else
+    buf = vim.api.nvim_create_buf(false, true)
+    cheatsheet_buf1 = buf
+    existing_buf = nil
   end
 
-  -- Use existing buffer or create a new one
-  local buf = existing_buf or vim.api.nvim_create_buf(false, true)
+  local buf2
+  if cheatsheet_buf2 and vim.api.nvim_buf_is_valid(cheatsheet_buf2) then
+    buf2 = cheatsheet_buf2
+  else
+    buf2 = vim.api.nvim_create_buf(false, true)
+    cheatsheet_buf2 = buf2
+  end
 
   -- Set buffer content and options only if it's a new buffer
   if not existing_buf then
@@ -186,7 +195,7 @@ function M.open_cheatsheet()
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 
     -- Set buffer options
-    vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+    -- vim.api.nvim_buf_set_option(buf, 'modifiable', false)
     vim.api.nvim_buf_set_option(buf, 'filetype', 'markdown')
     vim.api.nvim_buf_set_name(buf, 'Cheatsheet')
   end
@@ -208,41 +217,104 @@ function M.open_cheatsheet()
     col = col,
     style = 'minimal',
     border = 'rounded',
-    title = ' Neovim Cheat Sheet ',
+    title = 'Cheat Sheet 1',
     title_pos = 'center',
   }
 
   -- Create the floating window
 
-  local win = vim.api.nvim_open_win(buf, true, opts)
+  local win1 = vim.api.nvim_open_win(buf, true, opts)
 
-  -- Set window options
+  -- Calculate content split point
+  local lines = vim.split(cheatsheet_content, '\n')
+  local total_lines = #lines
+  local split_point = math.floor(total_lines / 2)
 
-  vim.api.nvim_win_set_option(win, 'wrap', true)
-  vim.api.nvim_win_set_option(win, 'linebreak', true)
-
-  -- Set keymaps for the cheatsheet buffer (only if it's a new buffer)
-  if not existing_buf then
-    local keymap_opts = { buffer = buf, silent = true }
-
-    -- Close with q or Escape
-
-    vim.keymap.set('n', 'q', '<cmd>close<cr>', keymap_opts)
-    vim.keymap.set('n', '<Esc>', '<cmd>close<cr>', keymap_opts)
-
-    -- Enable search with /
-
-    vim.keymap.set('n', '/', '/', keymap_opts)
-
-    -- Navigation keymaps
-
-    vim.keymap.set('n', 'j', 'j', keymap_opts)
-    vim.keymap.set('n', 'k', 'k', keymap_opts)
-    vim.keymap.set('n', '<C-d>', '<C-d>', keymap_opts)
-    vim.keymap.set('n', '<C-u>', '<C-u>', keymap_opts)
-    vim.keymap.set('n', 'gg', 'gg', keymap_opts)
-    vim.keymap.set('n', 'G', 'G', keymap_opts)
+  local lines2 = {}
+  -- Set content for second buffer
+  vim.api.nvim_buf_set_option(buf2, 'modifiable', true)
+  for i = split_point + 1, total_lines do
+    table.insert(lines2, lines[i])
   end
+  vim.api.nvim_buf_set_lines(buf2, 0, -1, false, lines2)
+  vim.api.nvim_buf_set_option(buf2, 'modifiable', false)
+  vim.api.nvim_buf_set_option(buf2, 'filetype', 'markdown')
+
+  vim.api.nvim_buf_set_name(buf2, 'Cheatsheet2')
+
+  -- Modify first buffer to show only first half
+  if existing_buf then
+    vim.api.nvim_buf_set_option(buf, 'modifiable', true)
+  end
+  local lines1 = {}
+  for i = 1, split_point do
+    table.insert(lines1, lines[i])
+  end
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines1)
+  vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+
+  -- Adjust first window to take left half
+  local half_width = math.floor(width / 2)
+  vim.api.nvim_win_set_width(win1, half_width)
+
+  -- Create second floating window for right pane
+  local opts2 = {
+    relative = 'editor',
+    width = half_width,
+    height = height,
+    row = row,
+    col = col + half_width,
+    style = 'minimal',
+    border = 'rounded',
+    title = 'Cheat Sheet 2',
+    title_pos = 'center',
+  }
+
+  local win2 = vim.api.nvim_open_win(buf2, true, opts2)
+  vim.api.nvim_win_set_buf(win2, buf2)
+
+  -- set pane1
+
+  vim.api.nvim_win_set_option(win1, 'wrap', true)
+  vim.api.nvim_win_set_option(win1, 'linebreak', true)
+
+  -- Set window options for second pane
+  vim.api.nvim_win_set_option(win2, 'wrap', true)
+  vim.api.nvim_win_set_option(win2, 'linebreak', true)
+
+  -- Set keymaps for the cheatsheet buffer
+
+  local keymap_opts = { buffer = buf, silent = true }
+  -- Close with q or Escape - close both windows
+  vim.keymap.set('n', 'q', function()
+    if vim.api.nvim_win_is_valid(win1) then
+      vim.api.nvim_win_close(win1, true)
+    end
+    vim.cmd 'close'
+  end, keymap_opts)
+
+  vim.keymap.set('n', '<Esc>', function()
+    if vim.api.nvim_win_is_valid(win1) then
+      vim.api.nvim_win_close(win1, true)
+    end
+    vim.cmd 'close'
+  end, keymap_opts)
+
+  local keymap_opts2 = { buffer = buf2, silent = true }
+  -- Close with q or Escape - close both windows
+  vim.keymap.set('n', 'q', function()
+    if vim.api.nvim_win_is_valid(win2) then
+      vim.api.nvim_win_close(win2, true)
+    end
+    vim.cmd 'close'
+  end, keymap_opts2)
+
+  vim.keymap.set('n', '<Esc>', function()
+    if vim.api.nvim_win_is_valid(win2) then
+      vim.api.nvim_win_close(win2, true)
+    end
+    vim.cmd 'close'
+  end, keymap_opts2)
 
   -- Focus on search when opening
 

@@ -1,28 +1,6 @@
 --[[
 
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
 What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
 
   Kickstart.nvim is a starting point for your own configuration.
     The goal is that you can read every line of code, top-to-bottom, understand
@@ -188,6 +166,10 @@ vim.keymap.set('n', '0', '$', { desc = 'End of line' })
 
 -- undo
 vim.keymap.set('n', '<Space>z', 'u', { desc = 'Undo' })
+
+-- delete but dont copy
+vim.keymap.set('n', 'd', '"_d', { noremap = true })
+vim.keymap.set('x', 'd', '"_d', { noremap = true })
 
 -- disable auto comment on continuation
 vim.api.nvim_create_autocmd('FileType', {
@@ -390,29 +372,29 @@ require('lazy').setup({
   --
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
 
-  { -- for file dir (custom)
-    'nvim-tree/nvim-tree.lua',
-    config = function()
-      require('nvim-tree').setup {
-        filters = {
-          custom = { '^\\.git$', '^\\.github$' },
-        },
-        view = {
-          side = 'right',
-          width = 30,
-        },
-      }
-      --   toggle file dir with space + dot
-      --   vim.keymap.set('n', '<c-.>', ':NvimTreeFindFile<CR>')
-      -- vim.keymap.set('n', '<leader>.', ':NvimTreeFindFile<CR>', { desc = 'Open tree view' })
-      vim.keymap.set('n', '<leader>.', ':NvimTreeToggle<CR>', { desc = 'Toggle tree view' })
-    end,
-  },
+  -- { -- for file dir (custom)
+  --'nvim-tree/nvim-tree.lua',
+  --config = function()
+  --require('nvim-tree').setup {
+  --filters = {
+  --custom = { '^\\.git$', '^\\.github$' },
+  --},
+  --view = {
+  --side = 'right',
+  --width = 30,
+  --},
+  --}
+  --   toggle file dir with space + dot
+  --   vim.keymap.set('n', '<c-.>', ':NvimTreeFindFile<CR>')
+  -- vim.keymap.set('n', '<leader>.', ':NvimTreeFindFile<CR>', { desc = 'Open tree view' })
+  --vim.keymap.set('n', '<leader>.', ':NvimTreeToggle<CR>', { desc = 'Toggle tree view' })
+  --end,
+  --},
 
   { -- for prettier (custom)
     'prettier/vim-prettier',
     build = 'pnpm install',
-    ft = { 'javascript', 'typescript', 'css', 'json', 'markdown', 'html' },
+    ft = { 'javascript', 'typescript', 'css', 'json', 'markdown', 'html', 'typescriptreact', 'yaml', 'markdown', 'javascriptreact' },
   },
 
   { -- for colorizer (custom)
@@ -422,16 +404,64 @@ require('lazy').setup({
     end,
   },
 
+  { -- for tailwindcss
+
+    'luckasRanarison/tailwind-tools.nvim',
+    name = 'tailwind-tools',
+    build = ':UpdateRemotePlugins',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-telescope/telescope.nvim', -- optional
+      'neovim/nvim-lspconfig', -- optional
+    },
+    opts = {}, -- your configuration
+  },
+
+  { -- for mouse hover
+    'lewis6991/hover.nvim',
+    config = function()
+      require('hover').setup {
+        init = function()
+          require 'hover.providers.lsp'
+          require 'hover.providers.gh'
+          require 'hover.providers.gh_user'
+          require 'hover.providers.jira'
+          require 'hover.providers.dap'
+          require 'hover.providers.fold_preview'
+          require 'hover.providers.diagnostic'
+          require 'hover.providers.man'
+          require 'hover.providers.dictionary'
+          require 'hover.providers.highlight'
+        end,
+        preview_opts = {
+          border = 'single',
+        },
+        -- Whether the contents of a currently open hover window should be moved
+        -- to a :h preview-window when pressing the hover keymap.
+        preview_window = false,
+        title = true,
+        mouse_providers = {
+          'LSP',
+        },
+        mouse_delay = 800,
+      }
+
+      -- Mouse support
+      vim.keymap.set('n', '<MouseMove>', require('hover').hover_mouse, { desc = 'hover.nvim (mouse)' })
+      vim.o.mousemoveevent = true
+    end,
+  },
+
   { -- for icons (custom)
     'nvim-tree/nvim-web-devicons',
     opts = {},
   },
 
-  { -- for auto pairs (custom)
-    'windwp/nvim-autopairs',
-    event = 'InsertEnter',
-    config = true,
-  },
+  --{ -- for auto pairs (custom)
+  --'windwp/nvim-autopairs',
+  --event = 'InsertEnter',
+  --config = true,
+  --},
 
   { -- for react snippets (custom)
     'mlaursen/vim-react-snippets',
@@ -486,6 +516,16 @@ require('lazy').setup({
         desc = 'Open git branches',
       })
     end,
+  },
+
+  { -- for autoclose and autorename tags
+    'windwp/nvim-ts-autotag',
+    opts = {
+      -- Defaults
+      enable_close = true, -- Auto close tags
+      enable_rename = true, -- Auto rename pairs of tags
+      enable_close_on_slash = false, -- Auto close on trailing </
+    },
   },
 
   { -- Fuzzy Finder (files, lsp, etc)
@@ -1017,7 +1057,7 @@ require('lazy').setup({
       ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
         styles = {
-          comments = { italic = true }, -- Disable italics in comments
+          comments = { italic = true },
         },
       }
 
@@ -1103,12 +1143,12 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.

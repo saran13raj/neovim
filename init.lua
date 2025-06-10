@@ -161,11 +161,27 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- move to first char of line
 vim.keymap.set('n', '1', '0', { desc = 'Start of line' })
 
+-- move to 1st non white space char
+vim.keymap.set('n', '2', '^', { desc = 'First non-whitespace character' })
+
 -- move to end char of line
 vim.keymap.set('n', '0', '$', { desc = 'End of line' })
 
 -- undo
 vim.keymap.set('n', '<Space>z', 'u', { desc = 'Undo' })
+
+-- jump/scroll with cursor in center
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+vim.keymap.set('n', '{', '{zz')
+vim.keymap.set('n', '}', '}zz')
+
+-- spell check
+-- vim.opt.spell = true
+-- vim.opt.spelllang = 'en_us'
+
+-- tabstop width
+vim.o.tabstop = 4
 
 -- delete but dont copy
 vim.keymap.set('n', 'd', '"_d', { noremap = true })
@@ -178,6 +194,12 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.opt_local.formatoptions:remove { 'r', 'o' }
   end,
 })
+
+-- toggle format on save (Custom)
+vim.keymap.set('n', '<leader>uf', function()
+  vim.g.disable_autoformat = not vim.g.disable_autoformat
+  vim.notify('Autoformat on save: ' .. (vim.g.disable_autoformat and 'OFF' or 'ON'))
+end, { desc = 'Toggle autoformat on save' })
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -226,12 +248,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- for cheatsheet
-local cheatsheet = require 'custom.cheatsheet'
-vim.keymap.set('n', '<leader>cs', cheatsheet.open_cheatsheet, {
-  noremap = true,
-  silent = true,
-  desc = 'Cheatsheet',
-})
+-- local cheatsheet = require 'custom.cheatsheet'
+-- vim.keymap.set('n', '<leader>cs', cheatsheet.open_cheatsheet, {
+--   noremap = true,
+--   silent = true,
+--   desc = 'Cheatsheet',
+-- })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -391,10 +413,35 @@ require('lazy').setup({
   --end,
   --},
 
-  { -- for prettier (custom)
-    'prettier/vim-prettier',
-    build = 'pnpm install',
-    ft = { 'javascript', 'typescript', 'css', 'json', 'markdown', 'html', 'typescriptreact', 'yaml', 'markdown', 'javascriptreact' },
+  { -- auto session manager (custom)
+    'rmagatti/auto-session',
+    config = function()
+      require('auto-session').setup {
+        suppressed_dirs = { '~/', '~/Projects', '~/Downloads', '/' },
+      }
+    end,
+  },
+
+  { -- undo tree (custom)
+    'mbbill/undotree',
+    opts = {},
+    config = function()
+      vim.keymap.set('n', '<leader>Z', vim.cmd.UndotreeToggle)
+    end,
+  },
+  { -- for prettierd - nyll-ls (custom)
+    'nvimtools/none-ls.nvim',
+    config = function()
+      local null_ls = require 'null-ls'
+
+      null_ls.setup {
+        sources = {
+          null_ls.builtins.formatting.prettierd.with {
+            filetypes = { 'javascript', 'typescript', 'css', 'json', 'markdown', 'html' },
+          },
+        },
+      }
+    end,
   },
 
   { -- for colorizer (custom)
@@ -402,6 +449,19 @@ require('lazy').setup({
     config = function()
       require('colorizer').setup()
     end,
+  },
+
+  { -- for scrollbar
+    'petertriho/nvim-scrollbar',
+    dependencies = {
+      'lewis6991/gitsigns.nvim',
+      'kevinhwang91/nvim-hlslens',
+    },
+    opts = {
+      handle = {
+        color = '#5c7a91',
+      },
+    },
   },
 
   { -- for tailwindcss
@@ -470,13 +530,19 @@ require('lazy').setup({
     end,
   },
 
+  { -- for context line
+    'nvim-treesitter/nvim-treesitter-context',
+    opts = {},
+  },
+
   { -- for lualine (custom)
     'nvim-lualine/lualine.nvim',
     config = function()
       require('lualine').setup {
         options = {
           icons_enabled = true,
-          theme = 'dracula',
+          -- theme = 'dracula',
+          theme = 'tokyonight',
           component_separators = { left = '|', right = '|' },
           section_separators = { left = '', right = '' },
         },
@@ -488,8 +554,28 @@ require('lazy').setup({
             },
           },
         },
+        tabline = {
+          lualine_a = {
+            {
+              'tabs',
+              mode = 2, -- 0: tab number, 1: tab name, 2: tab number + name
+            },
+          },
+          lualine_z = {},
+        },
       }
     end,
+  },
+
+  { -- for multi cursor (custom)
+    'mg979/vim-visual-multi',
+    branch = 'master',
+  },
+
+  { -- for typescript lsp - faster (custom)
+    'pmizio/typescript-tools.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+    opts = {},
   },
 
   { -- git (custom)
@@ -942,7 +1028,31 @@ require('lazy').setup({
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        -- javascript = { 'prettierd', 'prettier', stop_after_first = true },
+
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        css = { 'prettierd', 'prettier' },
+        scss = { 'prettierd', 'prettier' },
+        markdown = { 'prettierd', 'prettier' },
+        html = { 'prettierd', 'prettier' },
+        json = { 'prettierd', 'prettier' },
+        yaml = { 'prettierd', 'prettier' },
+        graphql = { 'prettierd', 'prettier' },
+        md = { 'prettierd', 'prettier' },
+        txt = { 'prettierd', 'prettier' },
+      },
+      formatters = {
+        stylua = {
+          args = { '--indent-width', '2', '--indent-type', 'Spaces', '-' },
+        },
+        prettier = {
+          require_cwd = true,
+          -- No need to set cwd or use conform.util.root_file
+          prepend_args = { '--single-quote', '--config-precedence', 'prefer-file' },
+        },
       },
     },
   },
@@ -969,14 +1079,19 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+
+              require('luasnip.loaders.from_lua').load { paths = '~/.config/nvim/lua/custom/luasnippets/' }
+            end,
+          },
         },
         opts = {},
+        config = function()
+          require('luasnip.loaders.from_lua').load { paths = './lua/custom/luasnippets/' }
+        end,
       },
       'folke/lazydev.nvim',
     },
@@ -1051,22 +1166,49 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+
+    -- synthweave theme
+    'samharju/synthweave.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = true },
+      local synthweave = require 'synthweave'
+      synthweave.setup {
+        transparent = false,
+        overrides = {
+          Normal = {
+            bg = '#202222',
+          },
+          NormalFloat = {
+            bg = '#262335',
+          },
+          LineNr = {
+            fg = '#576c7d',
+          },
+        },
+        palette = {
+          bg0 = '#202222',
         },
       }
+      synthweave.load()
 
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme = 'synthweave'
     end,
   },
+
+  -- { -- gruvbox dark theme
+  --   'morhetz/gruvbox',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.o.background = 'dark'
+  --     vim.cmd 'colorscheme gruvbox'
+  --     -- Override the Normal highlight group background
+  --     vim.api.nvim_set_hl(0, 'Normal', { bg = '#202222' })
+  --   end,
+  -- },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -1111,10 +1253,29 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
+    -- event = { 'BufReadPre', 'BufNewFile' },
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        -- 'json',
+        -- 'javascript',
+        -- 'typescript',
+        -- 'tsx',
+        -- 'css',
+        -- 'yaml',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -1125,6 +1286,16 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      -- custom incremental selection
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = '<C-space>',
+          node_incremental = '<C-space>',
+          scope_incremental = false,
+          node_decremental = '<bs>',
+        },
+      },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:

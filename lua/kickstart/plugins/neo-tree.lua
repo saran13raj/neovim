@@ -15,6 +15,12 @@ return {
   },
   opts = {
     filesystem = {
+      follow_current_file = { enabled = true },
+      filtered_items = {
+        visible = true,
+        never_show = { '.git' },
+      },
+
       window = {
         position = 'right',
         width = 30,

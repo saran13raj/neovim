@@ -523,12 +523,12 @@ require('lazy').setup({
   --config = true,
   --},
 
-  { -- for react snippets (custom)
-    'mlaursen/vim-react-snippets',
-    config = function()
-      require('vim-react-snippets').lazy_load()
-    end,
-  },
+  -- { -- for react snippets (custom)
+  --   'mlaursen/vim-react-snippets',
+  --   config = function()
+  --     require('vim-react-snippets').lazy_load()
+  --   end,
+  -- },
 
   { -- for context line
     'nvim-treesitter/nvim-treesitter-context',
@@ -542,7 +542,8 @@ require('lazy').setup({
         options = {
           icons_enabled = true,
           -- theme = 'dracula',
-          theme = 'tokyonight',
+          -- theme = 'tokyonight',
+          theme = 'synthweave',
           component_separators = { left = '|', right = '|' },
           section_separators = { left = '', right = '' },
         },
@@ -606,12 +607,16 @@ require('lazy').setup({
 
   { -- for autoclose and autorename tags
     'windwp/nvim-ts-autotag',
-    opts = {
-      -- Defaults
-      enable_close = true, -- Auto close tags
-      enable_rename = true, -- Auto rename pairs of tags
-      enable_close_on_slash = false, -- Auto close on trailing </
-    },
+    config = function()
+      require('nvim-ts-autotag').setup {
+        opts = {
+          -- Defaults
+          enable_close = true, -- Auto close tags
+          enable_rename = true, -- Auto rename pairs of tags
+          enable_close_on_slash = true, -- Auto close on trailing </
+        },
+      }
+    end,
   },
 
   { -- Fuzzy Finder (files, lsp, etc)
@@ -1082,7 +1087,7 @@ require('lazy').setup({
           {
             'rafamadriz/friendly-snippets',
             config = function()
-              require('luasnip.loaders.from_vscode').lazy_load()
+              -- require('luasnip.loaders.from_vscode').lazy_load()
 
               require('luasnip.loaders.from_lua').load { paths = '~/.config/nvim/lua/custom/luasnippets/' }
             end,
@@ -1161,10 +1166,7 @@ require('lazy').setup({
     },
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
+  {
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
 
     -- synthweave theme
@@ -1191,12 +1193,17 @@ require('lazy').setup({
       }
       synthweave.load()
 
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme = 'synthweave'
     end,
   },
+
+  -- { -- for lualine
+  --   'folke/tokyonight.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   opts = {},
+  -- },
 
   -- { -- gruvbox dark theme
   --   'morhetz/gruvbox',
@@ -1207,6 +1214,46 @@ require('lazy').setup({
   --     vim.cmd 'colorscheme gruvbox'
   --     -- Override the Normal highlight group background
   --     vim.api.nvim_set_hl(0, 'Normal', { bg = '#202222' })
+  --   end,
+  -- },
+
+  -- {
+  --   'sainnhe/everforest',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     -- Optionally configure and load the colorscheme
+  --     -- directly inside the plugin declaration.
+  --     vim.g.everforest_enable_italic = true
+  --     vim.g.everforest_background = 'hard'
+  --     vim.o.background = 'dark'
+  --     vim.cmd.colorscheme 'everforest'
+  --     vim.api.nvim_set_hl(0, 'Normal', { bg = '#101010' })
+  --
+  --     vim.api.nvim_set_hl(0, 'Accent1', { fg = '#F85552' }) -- Red
+  --     vim.api.nvim_set_hl(0, 'Accent2', { fg = '#F57D26' }) -- Orange
+  --     vim.api.nvim_set_hl(0, 'Accent3', { fg = '#DFA000' }) -- Yellow/Gold
+  --     vim.api.nvim_set_hl(0, 'Accent4', { fg = '#8DA101' }) -- Olive Green
+  --     vim.api.nvim_set_hl(0, 'Accent5', { fg = '#35A77C' }) -- Teal
+  --     vim.api.nvim_set_hl(0, 'Accent6', { fg = '#3A94C5' }) -- Blue
+  --     vim.api.nvim_set_hl(0, 'Accent7', { fg = '#DF69BA' }) -- Pink
+  --
+  --     vim.api.nvim_set_hl(0, 'Identifier', { fg = '#F85552' })
+  --     vim.api.nvim_set_hl(0, 'Function', { fg = '#F57D26' })
+  --
+  --     -- vim.api.nvim_create_autocmd('ColorScheme', {
+  --     --   group = vim.api.nvim_create_augroup('custom_highlights_everforest', {}),
+  --     --   pattern = 'everforest',
+  --     --   callback = function()
+  --     --     -- Get the light palette
+  --     --     local palette = vim.fn['everforest#get_palette']('light', {}) -- fetch light palette
+  --     --
+  --     --     -- Example: Override the accent colors for Identifier, Function, etc.
+  --     --     vim.api.nvim_set_hl(0, 'Identifier', { fg = palette.blue })
+  --     --     vim.api.nvim_set_hl(0, 'Function', { fg = palette.green })
+  --     --     vim.api.nvim_set_hl(0, 'Statement', { fg = palette.orange })
+  --     --   end,
+  --     -- })
   --   end,
   -- },
 

@@ -267,6 +267,21 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- mdx syntax highlight
+vim.filetype.add {
+  extension = {
+    mdx = 'mdx',
+  },
+}
+-- tell treesitte to use markdown parser for mdx
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'mdx',
+  callback = function(args)
+    vim.treesitter.start(args.buf, 'markdown')
+    vim.bo[args.buf].syntax = 'on' -- optional, for legacy syntax support
+  end,
+})
+
 -- for cheatsheet
 -- local cheatsheet = require 'custom.cheatsheet'
 -- vim.keymap.set('n', '<leader>cs', cheatsheet.open_cheatsheet, {

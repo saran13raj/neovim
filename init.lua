@@ -195,6 +195,12 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- set 2 cols for signs near line number
+vim.o.signcolumn = 'yes:2'
+
+-- split screen
+vim.keymap.set('n', '|', ':vsplit<CR>', { noremap = true, silent = true })
+
 -- toggle format on save (Custom)
 vim.keymap.set('n', '<leader>uf', function()
   vim.g.disable_autoformat = not vim.g.disable_autoformat
@@ -317,6 +323,8 @@ require('lazy').setup({
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+      signs_staged_enable = true,
+      current_line_blame = true,
     },
   },
 
@@ -480,6 +488,8 @@ require('lazy').setup({
   { -- for mouse hover
     'lewis6991/hover.nvim',
     config = function()
+      require 'hover.providers.diagnostic'
+      require 'hover.providers.highlight'
       require('hover').setup {
         init = function()
           require 'hover.providers.lsp'
@@ -502,9 +512,19 @@ require('lazy').setup({
         title = true,
         mouse_providers = {
           'LSP',
+          'Diagnostics',
+          'Highlight',
         },
         mouse_delay = 800,
       }
+
+      -- Setup keymaps
+      vim.keymap.set('n', '<C-p>', function()
+        require('hover').hover_switch 'previous'
+      end, { desc = 'hover.nvim (previous source)' })
+      vim.keymap.set('n', '<C-n>', function()
+        require('hover').hover_switch 'next'
+      end, { desc = 'hover.nvim (next source)' })
 
       -- Mouse support
       vim.keymap.set('n', '<MouseMove>', require('hover').hover_mouse, { desc = 'hover.nvim (mouse)' })
@@ -571,6 +591,12 @@ require('lazy').setup({
   { -- for multi cursor (custom)
     'mg979/vim-visual-multi',
     branch = 'master',
+  },
+
+  { -- for marks near the line number (custom)
+    'chentoast/marks.nvim',
+    event = 'VeryLazy',
+    opts = {},
   },
 
   { -- for typescript lsp - faster (custom)
@@ -1195,6 +1221,8 @@ require('lazy').setup({
 
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme = 'synthweave'
+
+      vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true, sp = '#f38ba8' })
     end,
   },
 
@@ -1258,7 +1286,14 @@ require('lazy').setup({
   -- },
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  -- TODO:
+  -- HACK:
+  -- PERF:
+  -- FIX:
+  -- WARNING:
+  -- NOTE:
+  -- TEST:
+  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = true } },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -1316,12 +1351,12 @@ require('lazy').setup({
         'query',
         'vim',
         'vimdoc',
-        -- 'json',
-        -- 'javascript',
-        -- 'typescript',
-        -- 'tsx',
-        -- 'css',
-        -- 'yaml',
+        'json',
+        'javascript',
+        'typescript',
+        'tsx',
+        'css',
+        'yaml',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,

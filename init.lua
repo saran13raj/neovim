@@ -1228,7 +1228,8 @@ require('lazy').setup({
           },
         },
         palette = {
-          bg0 = '#202222',
+          -- bg0 = '#202222',
+          bg0 = '#090909', -- for vitesse theme
         },
       }
       synthweave.load()
@@ -1239,6 +1240,8 @@ require('lazy').setup({
       -- set undercurl for error and warnings
       vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true, sp = '#f38ba8' })
       vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', { undercurl = true, sp = '#FCEF91' })
+
+      vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/vitesse_dark.lua'
     end,
   },
 

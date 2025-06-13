@@ -1,5 +1,5 @@
 --[[
-
+~/.local/state/nvim/shada -- neovim shada
 What is Kickstart?
 
   Kickstart.nvim is a starting point for your own configuration.
@@ -200,6 +200,20 @@ vim.o.signcolumn = 'yes:2'
 
 -- split screen
 vim.keymap.set('n', '|', ':vsplit<CR>', { noremap = true, silent = true })
+
+-- custom macros
+local esc = vim.api.nvim_replace_termcodes('<Esc>', true, true, true)
+
+vim.api.nvim_create_augroup('JSLogMacro', { clear = true })
+
+-- console.log ts, js
+vim.api.nvim_create_autocmd('FileType', {
+  group = 'JSLogMacro',
+  pattern = { 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' },
+  callback = function()
+    vim.fn.setreg('l', "veyoconsole.log('" .. esc .. "pa:::', " .. esc .. 'pa)')
+  end,
+})
 
 -- toggle format on save (Custom)
 vim.keymap.set('n', '<leader>uf', function()
@@ -1222,7 +1236,9 @@ require('lazy').setup({
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme = 'synthweave'
 
+      -- set undercurl for error and warnings
       vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true, sp = '#f38ba8' })
+      vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', { undercurl = true, sp = '#FCEF91' })
     end,
   },
 

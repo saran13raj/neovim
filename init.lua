@@ -173,6 +173,11 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', '{', '{zz')
 vim.keymap.set('n', '}', '}zz')
 
+-- nav buffers
+vim.keymap.set('n', 'gn', ':bnext<CR>', { noremap = true, silent = true, desc = 'Next buffer' })
+vim.keymap.set('n', 'gN', ':bprevious<CR>', { noremap = true, silent = true, desc = 'Previous buffer' })
+vim.keymap.set('n', 'gbd', ':%bd|edit#|bd#<CR>', { noremap = true, silent = true, desc = 'Clear all buffers except current' })
+
 -- spell check
 -- vim.opt.spell = true
 -- vim.opt.spelllang = 'en_us'
@@ -626,6 +631,7 @@ require('lazy').setup({
             {
               'filename',
               path = 1,
+              shorting_target = 80,
             },
           },
         },
@@ -636,7 +642,12 @@ require('lazy').setup({
               mode = 2, -- 0: tab number, 1: tab name, 2: tab number + name
             },
           },
-          lualine_z = {},
+          lualine_z = {
+            {
+              'buffers',
+              mode = 4,
+            },
+          },
         },
       }
     end,

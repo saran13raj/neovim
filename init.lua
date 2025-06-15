@@ -167,9 +167,6 @@ vim.keymap.set('n', '2', '^', { desc = 'First non-whitespace character' })
 -- move to end char of line
 vim.keymap.set('n', '0', '$', { desc = 'End of line' })
 
--- undo
-vim.keymap.set('n', '<Space>z', 'u', { desc = 'Undo' })
-
 -- jump/scroll with cursor in center
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
@@ -432,23 +429,50 @@ require('lazy').setup({
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
 
   -- { -- for file dir (custom)
-  --'nvim-tree/nvim-tree.lua',
-  --config = function()
-  --require('nvim-tree').setup {
-  --filters = {
-  --custom = { '^\\.git$', '^\\.github$' },
-  --},
-  --view = {
-  --side = 'right',
-  --width = 30,
-  --},
-  --}
-  --   toggle file dir with space + dot
-  --   vim.keymap.set('n', '<c-.>', ':NvimTreeFindFile<CR>')
-  -- vim.keymap.set('n', '<leader>.', ':NvimTreeFindFile<CR>', { desc = 'Open tree view' })
-  --vim.keymap.set('n', '<leader>.', ':NvimTreeToggle<CR>', { desc = 'Toggle tree view' })
-  --end,
-  --},
+  --   'nvim-tree/nvim-tree.lua',
+  --   config = function()
+  --     require('nvim-tree').setup {
+  --       filters = {
+  --         custom = { '^\\.git$', '^\\.github$' },
+  --       },
+  --       view = {
+  --         side = 'right',
+  --         width = 30,
+  --         -- mappings = {
+  --         --   list = {
+  --         --     { key = '?', action = 'toggle_help' },
+  --         --     { key = "'", action = 'close_node' },
+  --         --     { key = '"', action = 'collapse_all' },
+  --         --   },
+  --         -- },
+  --       },
+  --       diagnostics = { enable = true, show_on_dirs = true },
+  --       update_focused_file = {
+  --         enable = true,
+  --         update_root = true,
+  --         ignore_list = { 'help' },
+  --       },
+  --       renderer = {
+  --         indent_markers = {
+  --           enable = true,
+  --         },
+  --         icons = {
+  --           git_placement = 'signcolumn',
+  --           show = {
+  --             file = true,
+  --             folder = false,
+  --             folder_arrow = true,
+  --             git = true,
+  --           },
+  --         },
+  --       },
+  --     }
+  --     -- toggle file dir with space + dot
+  --     vim.keymap.set('n', '<c-.>', ':NvimTreeFindFile<CR>')
+  --     -- vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', { desc = 'Toggle tree view' })
+  --     vim.keymap.set('n', '\\', ':NvimTreeToggle<CR>', { desc = 'Toggle tree view', noremap = true, nowait = true })
+  --   end,
+  -- },
 
   { -- auto session manager (custom)
     'rmagatti/auto-session',
@@ -463,9 +487,10 @@ require('lazy').setup({
     'mbbill/undotree',
     opts = {},
     config = function()
-      vim.keymap.set('n', '<leader>Z', vim.cmd.UndotreeToggle)
+      vim.keymap.set('n', '<leader>z', vim.cmd.UndotreeToggle)
     end,
   },
+
   { -- for prettierd - nyll-ls (custom)
     'nvimtools/none-ls.nvim',
     config = function()
@@ -632,6 +657,22 @@ require('lazy').setup({
     'pmizio/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
     opts = {},
+    config = function()
+      require('typescript-tools').setup {
+        -- spawn additional tsserver instance to calculate diagnostics on it
+        separate_diagnostic_server = false,
+        tsserver_max_memory = 256, -- in mb
+        -- mirror of VSCode's `typescript.suggest.completeFunctionCalls`
+        complete_function_calls = true,
+        include_completions_with_insert_text = true,
+        settings = {
+          jsx_close_tag = {
+            enable = true,
+            filetypes = { 'javascriptreact', 'typescriptreact' },
+          },
+        },
+      }
+    end,
   },
 
   { -- git (custom)

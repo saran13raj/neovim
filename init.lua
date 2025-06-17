@@ -217,6 +217,35 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- for harpoon2
+local keys = {
+  {
+    '<leader>A',
+    function()
+      require('harpoon'):list():add()
+    end,
+    desc = 'Harpoon add file',
+  },
+  {
+    '<leader>ad',
+    function()
+      require('harpoon'):list():remove()
+    end,
+    desc = 'Harpoon remove file',
+  },
+}
+
+-- Add keys for selecting harpoon marks 1-5
+for i = 1, 5 do
+  table.insert(keys, {
+    '<leader>' .. i,
+    function()
+      require('harpoon'):list():select(i)
+    end,
+    desc = 'Harpoon go to file ' .. i,
+  })
+end
+
 -- toggle format on save (Custom)
 vim.keymap.set('n', '<leader>uf', function()
   vim.g.disable_autoformat = not vim.g.disable_autoformat
@@ -246,8 +275,8 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  See `:help wincmd` for a list of all window commands
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+-- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -664,6 +693,24 @@ require('lazy').setup({
     opts = {},
   },
 
+  {
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
+    opts = {
+      menu = {
+        width = vim.api.nvim_win_get_width(0) - 4,
+      },
+      settings = {
+        save_on_toggle = true,
+      },
+    },
+    keys = keys,
+    config = function()
+      require('harpoon').setup()
+    end,
+  },
+
   { -- for typescript lsp - faster (custom)
     'pmizio/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
@@ -675,6 +722,7 @@ require('lazy').setup({
         tsserver_max_memory = 256, -- in mb
         -- mirror of VSCode's `typescript.suggest.completeFunctionCalls`
         complete_function_calls = true,
+        single_file_support = true,
         include_completions_with_insert_text = true,
         settings = {
           jsx_close_tag = {
@@ -827,6 +875,30 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+
+      -- for harpoon2
+      -- basic telescope configuration
+      local conf = require('telescope.config').values
+      local function toggle_telescope(harpoon_files)
+        local file_paths = {}
+        for _, item in ipairs(harpoon_files.items) do
+          table.insert(file_paths, item.value)
+        end
+
+        require('telescope.pickers')
+          .new({}, {
+            prompt_title = 'Harpoon files',
+            finder = require('telescope.finders').new_table {
+              results = file_paths,
+            },
+            previewer = conf.file_previewer {},
+            sorter = conf.generic_sorter {},
+          })
+          :find()
+      end
+      vim.keymap.set('n', '<C-e>', function()
+        toggle_telescope(require('harpoon'):list())
+      end, { desc = 'Open harpoon window' })
     end,
   },
 

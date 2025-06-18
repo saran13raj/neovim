@@ -533,6 +533,11 @@ require('lazy').setup({
       null_ls.setup {
         sources = {
           null_ls.builtins.formatting.prettierd,
+          null_ls.builtins.diagnostics.credo.with {
+            condition = function(utils)
+              return utils.root_has_file '.credo.exs'
+            end,
+          },
         },
       }
     end,
@@ -1173,6 +1178,33 @@ require('lazy').setup({
             },
           },
         },
+
+        elixirls = {
+          keys = {
+            {
+              '<leader>cp',
+              function()
+                local params = vim.lsp.util.make_position_params()
+                LazyVim.lsp.execute {
+                  command = 'manipulatePipes:serverid',
+                  arguments = { 'toPipe', params.textDocument.uri, params.position.line, params.position.character },
+                }
+              end,
+              desc = 'To Pipe',
+            },
+            {
+              '<leader>cP',
+              function()
+                local params = vim.lsp.util.make_position_params()
+                LazyVim.lsp.execute {
+                  command = 'manipulatePipes:serverid',
+                  arguments = { 'fromPipe', params.textDocument.uri, params.position.line, params.position.character },
+                }
+              end,
+              desc = 'From Pipe',
+            },
+          },
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -1550,6 +1582,9 @@ require('lazy').setup({
         'tsx',
         'css',
         'yaml',
+        'elixir',
+        'heex',
+        'eex',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,

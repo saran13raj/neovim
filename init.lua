@@ -132,8 +132,8 @@ vim.o.splitbelow = true
 --  It is very similar to `vim.o` but offers an interface for conveniently interacting with tables.
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
-vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+-- vim.o.list = true
+-- vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -304,6 +304,7 @@ vim.filetype.add {
     mdx = 'mdx',
   },
 }
+
 -- tell treesitte to use markdown parser for mdx
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'mdx',
@@ -312,6 +313,19 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.bo[args.buf].syntax = 'on' -- optional, for legacy syntax support
   end,
 })
+
+-- to move line up or down
+-- Normal mode
+vim.keymap.set('n', '<A-j>', ':m .+1<CR>==', { desc = 'Move line down', noremap = true, silent = true })
+vim.keymap.set('n', '<A-k>', ':m .-2<CR>==', { desc = 'Move line up', noremap = true, silent = true })
+
+-- Insert mode
+vim.keymap.set('i', '<A-j>', '<Esc>:m .+1<CR>==gi', { desc = 'Move line down', noremap = true, silent = true })
+vim.keymap.set('i', '<A-k>', '<Esc>:m .-2<CR>==gi', { desc = 'Move line up', noremap = true, silent = true })
+
+-- Visual mode
+vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { desc = 'Move selection down', noremap = true, silent = true })
+vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv", { desc = 'Move selection up', noremap = true, silent = true })
 
 -- for cheatsheet
 -- local cheatsheet = require 'custom.cheatsheet'
@@ -647,22 +661,11 @@ require('lazy').setup({
     opts = {},
   },
 
-  --{ -- for auto pairs (custom)
-  --'windwp/nvim-autopairs',
-  --event = 'InsertEnter',
-  --config = true,
-  --},
-
-  -- { -- for react snippets (custom)
-  --   'mlaursen/vim-react-snippets',
-  --   config = function()
-  --     require('vim-react-snippets').lazy_load()
-  --   end,
-  -- },
-
   { -- for context line
     'nvim-treesitter/nvim-treesitter-context',
-    opts = {},
+    opts = {
+      max_lines = 4,
+    },
   },
 
   { -- for lualine (custom)
@@ -1419,35 +1422,37 @@ require('lazy').setup({
     'samharju/synthweave.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      local synthweave = require 'synthweave'
-      synthweave.setup {
-        transparent = false,
-        overrides = {
-          Normal = {
-            bg = '#202222',
-          },
-          NormalFloat = {
-            bg = '#262335',
-          },
-          LineNr = {
-            fg = '#576c7d',
-          },
-        },
-        palette = {
-          -- bg0 = '#202222',
-          bg0 = '#090909', -- for vitesse theme
-        },
-      }
-      synthweave.load()
+      -- local synthweave = require 'synthweave'
+      -- synthweave.setup {
+      --   transparent = false,
+      --   overrides = {
+      --     Normal = {
+      --       bg = '#202222',
+      --     },
+      --     NormalFloat = {
+      --       bg = '#262335',
+      --     },
+      --     LineNr = {
+      --       fg = '#576c7d',
+      --     },
+      --   },
+      --   palette = {
+      --     -- bg0 = '#202222',
+      --     bg0 = '#090909', -- for vitesse theme
+      --   },
+      -- }
+      -- synthweave.load()
 
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme = 'synthweave'
+      -- vim.cmd.colorscheme = 'synthweave'
 
       -- set undercurl for error and warnings
       vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true, sp = '#f38ba8' })
       vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', { undercurl = true, sp = '#FCEF91' })
 
-      vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/vitesse_dark.lua'
+      -- vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/vitesse_dark.lua'
+
+      vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/horizon_italic.lua'
     end,
   },
 

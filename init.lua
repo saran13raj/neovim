@@ -346,6 +346,19 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   end
 end
 
+-- list running lsp clients
+local function lsp_clients()
+  local clients = vim.lsp.get_active_clients { bufnr = 0 }
+  if #clients == 0 then
+    return ''
+  end
+  local names = {}
+  for _, client in ipairs(clients) do
+    table.insert(names, client.name)
+  end
+  return ' [ ' .. table.concat(names, ', ') .. ' ]'
+end
+
 ---@type vim.Option
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
@@ -687,6 +700,12 @@ require('lazy').setup({
               path = 1,
               shorting_target = 80,
             },
+          },
+          lualine_c = {},
+          lualine_x = {
+            lsp_clients,
+            'encoding',
+            'filetype',
           },
         },
         tabline = {

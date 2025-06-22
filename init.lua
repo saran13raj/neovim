@@ -200,6 +200,9 @@ vim.api.nvim_create_autocmd('FileType', {
 -- set 2 cols for signs near line number
 vim.o.signcolumn = 'yes:2'
 
+-- pop up menu to show 10 items
+vim.o.pumheight = 10
+
 -- split screen
 vim.keymap.set('n', '|', ':vsplit<CR>', { noremap = true, silent = true })
 
@@ -348,7 +351,7 @@ end
 
 -- list running lsp clients
 local function lsp_clients()
-  local clients = vim.lsp.get_active_clients { bufnr = 0 }
+  local clients = vim.lsp.get_clients { bufnr = 0 }
   if #clients == 0 then
     return ''
   end
@@ -709,12 +712,12 @@ require('lazy').setup({
           },
         },
         tabline = {
-          lualine_a = {
-            {
-              'tabs',
-              mode = 2, -- 0: tab number, 1: tab name, 2: tab number + name
-            },
-          },
+          -- lualine_a = {
+          --   {
+          --     'tabs',
+          --     mode = 2, -- 0: tab number, 1: tab name, 2: tab number + name
+          --   },
+          -- },
           lualine_z = {
             {
               'buffers',

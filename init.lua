@@ -77,10 +77,10 @@ vim.g.have_nerd_font = true
 --  For more options, you can see `:help option-list`
 
 -- Make line numbers default
-vim.o.number = true
+-- vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -555,6 +555,18 @@ require('lazy').setup({
     end,
   },
 
+  -- { -- for tagbar
+  --   'preservim/tagbar',
+  --   cmd = { 'TagbarToggle', 'TagbarOpen', 'TagbarClose' },
+  --   keys = {
+  --     { '<leader>tt', '<cmd>TagbarToggle<CR>', desc = 'Toggle Tagbar' },
+  --   },
+  --   config = function()
+  --     -- Optional: set Tagbar options here, e.g.
+  --     -- vim.g.tagbar_autofocus = 1
+  --   end,
+  -- },
+
   { -- for prettierd - nyll-ls (custom)
     'nvimtools/none-ls.nvim',
     config = function()
@@ -653,7 +665,7 @@ require('lazy').setup({
         mouse_providers = {
           'LSP',
           'Diagnostics',
-          'Highlight',
+          -- 'Highlight',
         },
         mouse_delay = 800,
       }

@@ -18,7 +18,7 @@ return {
       follow_current_file = { enabled = true },
       filtered_items = {
         visible = true,
-        never_show = { '.git' },
+        never_show = { '.git', '.DS_Store' },
       },
 
       window = {

@@ -9,7 +9,9 @@
 vim.api.nvim_set_hl(0, 'Comment', { italic = true })
 vim.api.nvim_set_hl(0, 'Keyword', { italic = true })
 
-vim.api.nvim_set_hl(0, 'Normal', { fg = '#D5D8DA', bg = '#1C1E26' })
+-- bg=#1c1e26
+-- fg=#e95678 for keywords
+vim.api.nvim_set_hl(0, 'Normal', { fg = '#D5D8DA', bg = '#141414' })
 vim.api.nvim_set_hl(0, 'NormalFloat', { fg = '#D5D8DA', bg = '#232530' })
 vim.api.nvim_set_hl(0, 'CursorLine', { bg = '#2E303E' })
 vim.api.nvim_set_hl(0, 'LineNr', { fg = '#576c7d' })
@@ -75,8 +77,9 @@ vim.api.nvim_set_hl(0, 'NeogitDiffContextHighlight', { bg = '#1C1E26' })
 
 -- Tree-sitter syntax highlight groups
 vim.api.nvim_set_hl(0, '@comment', { fg = '#525252', italic = true })
+vim.api.nvim_set_hl(0, '@comment.tsx', { fg = '#525252', italic = true })
 vim.api.nvim_set_hl(0, '@punctuation', { fg = '#BBBBBB' })
-vim.api.nvim_set_hl(0, '@punctuation.bracket', { fg = '#E95678' })
+vim.api.nvim_set_hl(0, '@punctuation.bracket', { fg = '#F09482' })
 vim.api.nvim_set_hl(0, '@punctuation.delimiter', { fg = '#BBBBBB' })
 vim.api.nvim_set_hl(0, '@constant', { fg = '#F09483' })
 vim.api.nvim_set_hl(0, '@constant.builtin', { fg = '#F09483' })

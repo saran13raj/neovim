@@ -80,7 +80,7 @@ vim.g.have_nerd_font = true
 -- vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
-vim.o.relativenumber = true
+-- vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -330,6 +330,21 @@ vim.keymap.set('i', '<A-k>', '<Esc>:m .-2<CR>==gi', { desc = 'Move line up', nor
 vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { desc = 'Move selection down', noremap = true, silent = true })
 vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv", { desc = 'Move selection up', noremap = true, silent = true })
 
+----------------------------------------------------------------------
+-- colors
+
+-- set undercurl for error and warnings
+vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true, sp = '#f38ba8' })
+vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', { undercurl = true, sp = '#FCEF91' })
+
+-- vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/vitesse_dark.lua'
+
+-- vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/horizon_italic.lua'
+
+vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/paddy-wolf.lua'
+
+----------------------------------------------------------------------
+
 -- for cheatsheet
 -- local cheatsheet = require 'custom.cheatsheet'
 -- vim.keymap.set('n', '<leader>cs', cheatsheet.open_cheatsheet, {
@@ -555,18 +570,6 @@ require('lazy').setup({
     end,
   },
 
-  -- { -- for tagbar
-  --   'preservim/tagbar',
-  --   cmd = { 'TagbarToggle', 'TagbarOpen', 'TagbarClose' },
-  --   keys = {
-  --     { '<leader>tt', '<cmd>TagbarToggle<CR>', desc = 'Toggle Tagbar' },
-  --   },
-  --   config = function()
-  --     -- Optional: set Tagbar options here, e.g.
-  --     -- vim.g.tagbar_autofocus = 1
-  --   end,
-  -- },
-
   { -- for prettierd - nyll-ls (custom)
     'nvimtools/none-ls.nvim',
     config = function()
@@ -692,7 +695,7 @@ require('lazy').setup({
   { -- for context line
     'nvim-treesitter/nvim-treesitter-context',
     opts = {
-      max_lines = 4,
+      max_lines = 2,
     },
   },
 
@@ -704,7 +707,7 @@ require('lazy').setup({
           icons_enabled = true,
           -- theme = 'dracula',
           -- theme = 'tokyonight',
-          theme = 'synthweave',
+          -- theme = 'synthweave',
           component_separators = { left = '|', right = '|' },
           section_separators = { left = '', right = '' },
         },
@@ -734,6 +737,10 @@ require('lazy').setup({
             {
               'buffers',
               mode = 4,
+              buffers_color = { -- for paddy-wolf colors
+                active = { fg = '#ffffff', bg = '#6d9231' },
+                inactive = { fg = '#888888', bg = '#222222' },
+              },
             },
           },
         },
@@ -1448,54 +1455,6 @@ require('lazy').setup({
       signature = { enabled = true },
     },
   },
-
-  {
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-
-    -- synthweave theme
-    'samharju/synthweave.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    config = function()
-      -- local synthweave = require 'synthweave'
-      -- synthweave.setup {
-      --   transparent = false,
-      --   overrides = {
-      --     Normal = {
-      --       bg = '#202222',
-      --     },
-      --     NormalFloat = {
-      --       bg = '#262335',
-      --     },
-      --     LineNr = {
-      --       fg = '#576c7d',
-      --     },
-      --   },
-      --   palette = {
-      --     -- bg0 = '#202222',
-      --     bg0 = '#090909', -- for vitesse theme
-      --   },
-      -- }
-      -- synthweave.load()
-
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      -- vim.cmd.colorscheme = 'synthweave'
-
-      -- set undercurl for error and warnings
-      vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', { undercurl = true, sp = '#f38ba8' })
-      vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', { undercurl = true, sp = '#FCEF91' })
-
-      -- vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/vitesse_dark.lua'
-
-      vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/horizon_italic.lua'
-    end,
-  },
-
-  -- { -- for lualine
-  --   'folke/tokyonight.nvim',
-  --   lazy = false,
-  --   priority = 1000,
-  --   opts = {},
-  -- },
 
   -- { -- gruvbox dark theme
   --   'morhetz/gruvbox',

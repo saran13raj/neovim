@@ -562,13 +562,13 @@ require('lazy').setup({
     end,
   },
 
-  { -- undo tree (custom)
-    'mbbill/undotree',
-    opts = {},
-    config = function()
-      vim.keymap.set('n', '<leader>z', vim.cmd.UndotreeToggle)
-    end,
-  },
+  -- { -- undo tree (custom)
+  --   'mbbill/undotree',
+  --   opts = {},
+  --   config = function()
+  --     vim.keymap.set('n', '<leader>z', vim.cmd.UndotreeToggle)
+  --   end,
+  -- },
 
   { -- for prettierd - nyll-ls (custom)
     'nvimtools/none-ls.nvim',

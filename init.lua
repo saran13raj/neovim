@@ -201,7 +201,7 @@ vim.api.nvim_create_autocmd('FileType', {
 vim.o.signcolumn = 'yes:2'
 
 -- pop up menu to show 10 items
-vim.o.pumheight = 10
+vim.o.pumheight = 13
 
 -- split screen
 vim.keymap.set('n', '|', ':vsplit<CR>', { noremap = true, silent = true })

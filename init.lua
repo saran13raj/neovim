@@ -697,6 +697,11 @@ require('lazy').setup({
     branch = 'release',
   },
 
+  --   { -- rust syntax highlight
+  --   "rust-lang/rust.vim",
+  -- },
+  --
+
   { -- for context line
     'nvim-treesitter/nvim-treesitter-context',
     opts = {

@@ -692,6 +692,11 @@ require('lazy').setup({
     opts = {},
   },
 
+  { -- for code completion
+    'neoclide/coc.nvim',
+    branch = 'release',
+  },
+
   { -- for context line
     'nvim-treesitter/nvim-treesitter-context',
     opts = {

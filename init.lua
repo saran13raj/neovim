@@ -158,14 +158,14 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- custom keymap set
 
--- move to first char of line
-vim.keymap.set('n', '1', '0', { desc = 'Start of line' })
-
--- move to 1st non white space char
-vim.keymap.set('n', '2', '^', { desc = 'First non-whitespace character' })
-
--- move to end char of line
-vim.keymap.set('n', '0', '$', { desc = 'End of line' })
+-- -- move to first char of line
+-- vim.keymap.set('n', '1', '0', { desc = 'Start of line' })
+--
+-- -- move to 1st non white space char
+-- vim.keymap.set('n', '2', '^', { desc = 'First non-whitespace character' })
+--
+-- -- move to end char of line
+-- vim.keymap.set('n', '0', '$', { desc = 'End of line' })
 
 -- jump/scroll with cursor in center
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
@@ -200,7 +200,7 @@ vim.api.nvim_create_autocmd('FileType', {
 -- set 2 cols for signs near line number
 vim.o.signcolumn = 'yes:2'
 
--- pop up menu to show 10 items
+-- pop up menu to show 13 items
 vim.o.pumheight = 13
 
 -- split screen
@@ -330,6 +330,20 @@ vim.keymap.set('i', '<A-k>', '<Esc>:m .-2<CR>==gi', { desc = 'Move line up', nor
 vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { desc = 'Move selection down', noremap = true, silent = true })
 vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv", { desc = 'Move selection up', noremap = true, silent = true })
 
+-- to copy & paste line up or down
+-- Normal mode
+vim.keymap.set('n', '<C-A-j>', 'yyp', { desc = 'Copy line down', noremap = true, silent = true })
+vim.keymap.set('n', '<C-A-k>', 'yyP', { desc = 'Copy line up', noremap = true, silent = true })
+
+-- Insert mode
+vim.keymap.set('i', '<C-A-j>', '<Esc>yypgi', { desc = 'Copy line down', noremap = true, silent = true })
+vim.keymap.set('i', '<C-A-k>', '<Esc>yyPgi', { desc = 'Copy line up', noremap = true, silent = true })
+
+-- Visual Mode
+vim.keymap.set('v', '<C-A-j>', 'y`>p', { desc = 'Copy selection down', noremap = true, silent = true })
+vim.keymap.set('v', '<C-A-k>', 'y`<P', { desc = 'Copy selection up', noremap = true, silent = true })
+
+----------------------------------------------------------------------
 ----------------------------------------------------------------------
 -- colors
 
@@ -343,6 +357,7 @@ vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', { undercurl = true, sp = '#FCE
 
 vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/paddy-wolf.lua'
 
+----------------------------------------------------------------------
 ----------------------------------------------------------------------
 
 -- for cheatsheet

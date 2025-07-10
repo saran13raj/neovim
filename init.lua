@@ -480,7 +480,7 @@ require('lazy').setup({
   --   end,
   -- },
 
-  { -- for prettierd - nyll-ls (custom)
+  { -- for prettierd - null-ls (custom)
     'nvimtools/none-ls.nvim',
     config = function()
       local null_ls = require 'null-ls'
@@ -698,14 +698,14 @@ require('lazy').setup({
     opts = {},
     config = function()
       require('typescript-tools').setup {
-        -- spawn additional tsserver instance to calculate diagnostics on it
-        separate_diagnostic_server = false,
         tsserver_max_memory = 256, -- in mb
         -- mirror of VSCode's `typescript.suggest.completeFunctionCalls`
-        complete_function_calls = true,
+        complete_function_calls = false,
         single_file_support = true,
         include_completions_with_insert_text = true,
         settings = {
+          -- spawn additional tsserver instance to calculate diagnostics on it
+          separate_diagnostic_server = false,
           jsx_close_tag = {
             enable = true,
             filetypes = { 'javascriptreact', 'typescriptreact' },
@@ -1118,6 +1118,18 @@ require('lazy').setup({
             },
           },
         },
+
+        -- tailwindcss = {
+        --   root_dir = function(...)
+        --     return require('lspconfig.util').root_pattern '.git'(...)
+        --   end,
+        -- },
+        --
+        -- require('typescript-tools').setup {
+        --   root_dir = function(...)
+        --     return require('lspconfig.util').root_pattern '.git'(...)
+        --   end,
+        -- },
       }
 
       local ensure_installed = vim.tbl_keys(servers or {})
@@ -1132,10 +1144,17 @@ require('lazy').setup({
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
+
+            -- Skip tsserver setup since typescript-tools.nvim handles it
+            if server_name == 'tsserver' or server_name == 'ts_ls' then
+              return
+            end
+
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+
             require('lspconfig')[server_name].setup(server)
           end,
         },

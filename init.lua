@@ -550,61 +550,56 @@ require('lazy').setup({
     opts = {}, -- your configuration
   },
 
-  { -- for mouse hover
-    'lewis6991/hover.nvim',
-    config = function()
-      require 'hover.providers.diagnostic'
-      require 'hover.providers.highlight'
-      require('hover').setup {
-        init = function()
-          require 'hover.providers.lsp'
-          require 'hover.providers.gh'
-          require 'hover.providers.gh_user'
-          require 'hover.providers.jira'
-          require 'hover.providers.dap'
-          require 'hover.providers.fold_preview'
-          require 'hover.providers.diagnostic'
-          require 'hover.providers.man'
-          require 'hover.providers.dictionary'
-          require 'hover.providers.highlight'
-        end,
-        preview_opts = {
-          border = 'single',
-        },
-        -- Whether the contents of a currently open hover window should be moved
-        -- to a :h preview-window when pressing the hover keymap.
-        preview_window = false,
-        title = true,
-        mouse_providers = {
-          'LSP',
-          'Diagnostics',
-          -- 'Highlight',
-        },
-        mouse_delay = 800,
-      }
-
-      -- Setup keymaps
-      vim.keymap.set('n', '<C-p>', function()
-        require('hover').hover_switch 'previous'
-      end, { desc = 'hover.nvim (previous source)' })
-      vim.keymap.set('n', '<C-n>', function()
-        require('hover').hover_switch 'next'
-      end, { desc = 'hover.nvim (next source)' })
-
-      -- Mouse support
-      vim.keymap.set('n', '<MouseMove>', require('hover').hover_mouse, { desc = 'hover.nvim (mouse)' })
-      vim.o.mousemoveevent = true
-    end,
-  },
+  -- { -- for mouse hover
+  --   'lewis6991/hover.nvim',
+  --   config = function()
+  --     require 'hover.providers.diagnostic'
+  --     require 'hover.providers.highlight'
+  --     require('hover').setup {
+  --       init = function()
+  --         require 'hover.providers.lsp'
+  --         require 'hover.providers.gh'
+  --         require 'hover.providers.gh_user'
+  --         require 'hover.providers.jira'
+  --         require 'hover.providers.dap'
+  --         require 'hover.providers.fold_preview'
+  --         require 'hover.providers.diagnostic'
+  --         require 'hover.providers.man'
+  --         require 'hover.providers.dictionary'
+  --         require 'hover.providers.highlight'
+  --       end,
+  --       preview_opts = {
+  --         border = 'single',
+  --       },
+  --       -- Whether the contents of a currently open hover window should be moved
+  --       -- to a :h preview-window when pressing the hover keymap.
+  --       preview_window = false,
+  --       title = true,
+  --       mouse_providers = {
+  --         'LSP',
+  --         'Diagnostics',
+  --         -- 'Highlight',
+  --       },
+  --       mouse_delay = 800,
+  --     }
+  --
+  --     -- Setup keymaps
+  --     vim.keymap.set('n', '<C-p>', function()
+  --       require('hover').hover_switch 'previous'
+  --     end, { desc = 'hover.nvim (previous source)' })
+  --     vim.keymap.set('n', '<C-n>', function()
+  --       require('hover').hover_switch 'next'
+  --     end, { desc = 'hover.nvim (next source)' })
+  --
+  --     -- Mouse support
+  --     vim.keymap.set('n', '<MouseMove>', require('hover').hover_mouse, { desc = 'hover.nvim (mouse)' })
+  --     vim.o.mousemoveevent = true
+  --   end,
+  -- },
 
   { -- for icons (custom)
     'nvim-tree/nvim-web-devicons',
     opts = {},
-  },
-
-  { -- for code completion
-    'neoclide/coc.nvim',
-    branch = 'release',
   },
 
   --   { -- rust syntax highlight
@@ -1409,9 +1404,9 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  require 'kickstart.plugins.debug',
+  -- require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
-  require 'kickstart.plugins.lint',
+  -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps

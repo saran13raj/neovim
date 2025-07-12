@@ -138,6 +138,9 @@ vim.api.nvim_create_autocmd('FileType', {
 -- set 2 cols for signs near line number
 vim.o.signcolumn = 'yes:2'
 
+-- vertical window split line
+vim.opt.fillchars:append { vert = '|' }
+
 -- pop up menu to show 13 items
 vim.o.pumheight = 13
 

@@ -46,6 +46,7 @@ vim.api.nvim_set_hl(0, 'QuickFixLine', { bg = '#292524' })
 vim.api.nvim_set_hl(0, 'Operator', { fg = '#b87e76' })
 vim.api.nvim_set_hl(0, 'Terminal', { fg = '#dcbd9d', bg = '#221f1e' })
 vim.api.nvim_set_hl(0, 'UfoFoldedEllipsis', { bg = '#dcbd9d', fg = '#221f1e' })
+vim.api.nvim_set_hl(0, 'WinSeparator', { fg = '#4c4c4c', bg = 'NONE' })
 
 -- diff
 vim.api.nvim_set_hl(0, 'DiffAdd', { bg = '#102922' })

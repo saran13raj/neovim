@@ -677,6 +677,56 @@ require('lazy').setup({
     opts = {},
   },
 
+  { -- for tagbar
+    {
+      'stevearc/aerial.nvim',
+      opts = {},
+      -- Optional dependencies
+      dependencies = {
+        'nvim-treesitter/nvim-treesitter',
+        'nvim-tree/nvim-web-devicons',
+      },
+      config = function()
+        require('aerial').setup {
+          -- use lsp instead of treesitter
+          backends = { 'lsp' },
+
+          -- optionally use on_attach to set keymaps when aerial has attached to a buffer
+          on_attach = function(bufnr)
+            -- Jump forwards/backwards with '{' and '}'
+            vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', { buffer = bufnr })
+            vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', { buffer = bufnr })
+          end,
+
+          -- see all available values
+          filter_kind = {
+            'Class',
+            'Constant',
+            'Constructor',
+            'Enum',
+            'EnumMember',
+            'Event',
+            'Field',
+            'File',
+            'Function',
+            'Interface',
+            'Method',
+            'Module',
+            'Namespace',
+            'Operator',
+            'Package',
+            'Struct',
+            'Variable',
+          },
+
+          show_guides = true,
+        }
+        -- You probably also want to set a keymap to toggle aerial
+        vim.keymap.set('n', '<leader>aa', '<cmd>AerialToggle!<CR>')
+      end,
+    },
+  },
+
   {
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',

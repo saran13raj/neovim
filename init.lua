@@ -144,6 +144,9 @@ vim.opt.fillchars:append { vert = '|' }
 -- pop up menu to show 13 items
 vim.o.pumheight = 13
 
+-- to not wrap long lines
+vim.o.wrap = false
+
 -- split screen
 vim.keymap.set('n', '|', ':vsplit<CR>', { noremap = true, silent = true })
 

@@ -337,14 +337,14 @@ local function lsp_clients()
 end
 
 -- this returns the status of codeium
--- local function codeium_status()
---   local ok, status = pcall(vim.api.nvim_call_function, 'codeium#GetStatusString', {})
---   if ok and status and status ~= '' then
---     return 'Codeium:' .. status
---   else
---     return '' -- Or handle fallback
---   end
--- end
+local function codeium_status()
+  local ok, status = pcall(vim.api.nvim_call_function, 'codeium#GetStatusString', {})
+  if ok and status and status ~= '' then
+    return 'Codeium:' .. status
+  else
+    return '' -- Or handle fallback
+  end
+end
 
 ---@type vim.Option
 local rtp = vim.opt.rtp
@@ -488,10 +488,14 @@ require('lazy').setup({
     end,
   },
 
-  -- { -- codium AI completion (custom)
-  --   'Exafunction/windsurf.vim',
-  --   event = 'BufEnter',
-  -- },
+  { -- codium AI completion (custom)
+    'Exafunction/windsurf.vim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'hrsh7th/nvim-cmp',
+    },
+    event = 'BufEnter',
+  },
 
   -- { -- undo tree (custom)
   --   'mbbill/undotree',
@@ -657,7 +661,7 @@ require('lazy').setup({
           },
           lualine_c = {},
           lualine_x = {
-            -- codeium_status,
+            codeium_status,
             lsp_clients,
             'encoding',
             'filetype',

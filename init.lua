@@ -299,7 +299,7 @@ vim.api.nvim_set_hl(0, 'DiagnosticUnderlineWarn', { undercurl = true, sp = '#FCE
 
 -- vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/horizon_italic.lua'
 
-vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/paddy-wolf.lua'
+-- vim.cmd 'luafile ~/.config/nvim/lua/custom/colors/paddy-wolf.lua'
 
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
@@ -637,6 +637,16 @@ require('lazy').setup({
     opts = {
       max_lines = 2,
     },
+  },
+
+  {
+    -- 'saran13raj/wheat-fox.nvim',
+    dir = '/Users/saran13raj/Desktop/workspace/saran13raj/wheat-fox.nvim',
+    priority = 1000,
+    config = function()
+      require('wheat-fox').setup()
+      vim.cmd.colorscheme 'wheat-fox'
+    end,
   },
 
   { -- for lualine (custom)

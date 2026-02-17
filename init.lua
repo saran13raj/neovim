@@ -644,7 +644,26 @@ require('lazy').setup({
     dir = '/Users/saran13raj/Desktop/workspace/saran13raj/wheat-fox.nvim',
     priority = 1000,
     config = function()
-      require('wheat-fox').setup()
+      require('wheat-fox').setup {
+        transparent = false, -- Enable this to disable setting the background color
+        terminal_colors = true, -- Configure the color of `:terminal` vim
+        styles = {
+          comments = {}, -- For modifying the highlight groups of comments
+          conditionals = {},
+          loops = {},
+          functions = {},
+          keywords = {},
+          strings = {},
+          variables = {},
+          numbers = {},
+          booleans = {},
+          properties = {},
+          types = {},
+          operators = {},
+        },
+        sidebars = { 'qf', 'help' }, -- Set the theme for the listed sidebars and floating windows
+        floats = { 'help', 'terminal', 'packer' },
+      }
       vim.cmd.colorscheme 'wheat-fox'
     end,
   },

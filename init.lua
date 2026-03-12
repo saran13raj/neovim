@@ -1197,32 +1197,32 @@ require('lazy').setup({
           },
         },
 
-        elixirls = {
-          keys = {
-            {
-              '<leader>cp',
-              function()
-                local params = vim.lsp.util.make_position_params()
-                LazyVim.lsp.execute {
-                  command = 'manipulatePipes:serverid',
-                  arguments = { 'toPipe', params.textDocument.uri, params.position.line, params.position.character },
-                }
-              end,
-              desc = 'To Pipe',
-            },
-            {
-              '<leader>cP',
-              function()
-                local params = vim.lsp.util.make_position_params()
-                LazyVim.lsp.execute {
-                  command = 'manipulatePipes:serverid',
-                  arguments = { 'fromPipe', params.textDocument.uri, params.position.line, params.position.character },
-                }
-              end,
-              desc = 'From Pipe',
-            },
-          },
-        },
+        -- elixirls = {
+        --   keys = {
+        --     {
+        --       '<leader>cp',
+        --       function()
+        --         local params = vim.lsp.util.make_position_params()
+        --         LazyVim.lsp.execute {
+        --           command = 'manipulatePipes:serverid',
+        --           arguments = { 'toPipe', params.textDocument.uri, params.position.line, params.position.character },
+        --         }
+        --       end,
+        --       desc = 'To Pipe',
+        --     },
+        --     {
+        --       '<leader>cP',
+        --       function()
+        --         local params = vim.lsp.util.make_position_params()
+        --         LazyVim.lsp.execute {
+        --           command = 'manipulatePipes:serverid',
+        --           arguments = { 'fromPipe', params.textDocument.uri, params.position.line, params.position.character },
+        --         }
+        --       end,
+        --       desc = 'From Pipe',
+        --     },
+        --   },
+        -- },
 
         -- tailwindcss = {
         --   root_dir = function(...)
@@ -1305,10 +1305,10 @@ require('lazy').setup({
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { 'prettierd', 'prettier', stop_after_first = true },
 
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'prettier', 'prettierd', stop_after_first = true },
+        javascriptreact = { 'prettier', 'prettierd', stop_after_first = true },
+        typescriptreact = { 'prettier', 'prettierd', stop_after_first = true },
+        typescript = { 'prettier', 'prettierd', stop_after_first = true },
         css = { 'prettierd', 'prettier' },
         scss = { 'prettierd', 'prettier' },
         markdown = { 'prettierd', 'prettier' },
@@ -1491,7 +1491,7 @@ require('lazy').setup({
         'go',
       },
       -- Autoinstall languages that are not installed
-      auto_install = true,
+      auto_install = false,
       highlight = {
         enable = true,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
